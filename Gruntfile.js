@@ -44,6 +44,11 @@ module.exports = function (grunt) {
         files: ['test/spec/{,*/}*.js'],
         tasks: ['newer:jshint:test', 'karma']
       },
+      less: {
+          files: ['<%= yeoman.app %>/styles/{,*/}*.less'
+          ],
+          tasks: ['less:server']
+      },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
         tasks: ['newer:copy:styles', 'autoprefixer']
@@ -189,10 +194,36 @@ module.exports = function (grunt) {
     wiredep: {
       app: {
         src: ['<%= yeoman.app %>/index.html'],
+        exclude: [ /jquery/, 'bootstrap' ],
         ignorePath:  /\.\.\//
       }
     },
-
+    less: {
+        options: {
+            paths: [
+                './bower_components'
+            ]
+        },
+        dist: {
+            options: {
+                yuicompress: true,
+                report: 'gzip'
+            },
+            files: {
+                '.tmp/styles/main.css': '<%= yeoman.app %>/styles/main.less'
+            }
+        },
+        server: {
+            options: {
+                sourceMap: true,
+                sourceMapBasepath: '<%= yeoman.app %>/',
+                sourceMapRootpath: '../'
+            },
+            files: {
+                '.tmp/styles/main.css': '<%= yeoman.app %>/styles/main.less'
+            }
+        }
+    },
     // Renames files for browser caching purposes
     filerev: {
       dist: {
@@ -358,15 +389,17 @@ module.exports = function (grunt) {
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [
+        'less:server',
         'copy:styles'
       ],
       test: [
         'copy:styles'
       ],
       dist: [
-        'copy:styles',
-        'imagemin',
-        'svgmin'
+        'less:dist',
+        'copy:styles'
+        // 'imagemin',
+        // 'svgmin'
       ]
     },
 
