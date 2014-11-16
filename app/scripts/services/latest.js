@@ -12,6 +12,6 @@ angular.module('visualHackerNewsApp')
     // create a reference to the user's profile
     var ref = new Firebase("https://hacker-news.firebaseio.com/v0/topstories");
     // return it as a synchronized object
-    return $firebase(ref).$asObject();
+    return $firebase(ref).$asArray();
 });
 

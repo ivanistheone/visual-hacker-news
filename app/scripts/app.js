@@ -16,7 +16,8 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'firebase'
+    'firebase',
+    'infinite-scroll'
   ])
   .config(function ($routeProvider) {
     $routeProvider
