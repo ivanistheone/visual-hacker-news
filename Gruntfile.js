@@ -206,8 +206,8 @@ module.exports = function (grunt) {
         },
         dist: {
             options: {
-                yuicompress: true,
-                report: 'gzip'
+                yuicompress: true
+                // report: 'gzip'
             },
             files: {
                 '.tmp/styles/main.css': '<%= yeoman.app %>/styles/main.less'
