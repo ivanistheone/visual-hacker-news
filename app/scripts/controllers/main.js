@@ -20,7 +20,7 @@ angular.module('visualHackerNewsApp')
 		$scope.nextPage();
     });
     $scope.nextPage = function nextPage() {
-    	var pageSize = 10;
+    	var pageSize = 12;
     	var pageList = $scope.latestList && $scope.latestList.slice(index,pageSize+index);
     	var qPagelist = [];
     	// console.log(size , index ,$scope.news.length, $scope.busy );
