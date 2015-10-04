@@ -1,11 +1,19 @@
 <h2>Visual Hacker News</h2>
-<p>Quick way to visualize the top 500 news items on <a href="https://news.ycombinator.com/">Hacker news</a> using <a href="https://angularjs.org/">Angularjs</a> and <a href="https://github.com/HackerNews/API">HackerNews Firebase API</a>.</p>
+<p>Quick way to visualize the top 500 news items on <a href="https://news.ycombinator.com/" target="_blank">Hacker news</a> using <a href="https://angularjs.org/" target="_blank">Angularjs</a> and <a href="https://github.com/HackerNews/API">HackerNews Firebase API</a>. Thumbnails generated using <a href="http://webthumbnail.org" target="_blank">webthumbnail.org</a></p>
 <div infinite-scroll="nextPage()" infinite-scroll-disabled='busy' infinite-scroll-distance="1">
-	<div class="row marketing" ng-show="news">
-		<div class="col-sm-6 col-lg-3" ng-repeat="newsItem in news track by ::newsItem.id">
+	<div class="row marketing" data-ng-show="news">
+		<div 
+			class="col-sm-6 col-lg-3" 
+			data-ng-repeat="newsItem in news track by ::newsItem.$id"
+			data-ng-if="::newsItem.url">
 			<div class="news-item">
-			  <h5 class="news-title">{{::newsItem.title}}</h5>
-			  <a href="{{::newsItem.url}}" target="_blank"><img class="img-responsive" ng-src="http://api.webthumbnail.org?width=500&height=500&screen=1024&format=jpg&url={{::newsItem.url}}" alt="{{::newsItem.title}}" /></a>
+			  <h5 class="news-title"><span class="label label-default">{{::newsItem.score}}</span> {{::newsItem.title}}</h5>
+			  <a href="{{::newsItem.url}}" target="_blank">
+			  	<img 
+			  		class="img-responsive" 
+			  		data-ng-src='//api.webthumbnail.org?width=500&height=500&screen=1024&format=jpg&url={{::newsItem.url}}' 
+			  		alt="{{::newsItem.title}}" />
+			  </a>
 			</div>
 		</div>
 	</div>

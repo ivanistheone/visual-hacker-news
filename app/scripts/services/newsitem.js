@@ -15,6 +15,8 @@ angular.module('visualHackerNewsApp')
     var ref = new Firebase("https://hacker-news.firebaseio.com/v0/item/").child(newsItem);
     // return it as a synchronized object
     $firebaseObject(ref).$loaded().then(function(result){
+    	delete result.kids;
+    	// console.log(result)
     	deferred.resolve(result);
     });
     return deferred.promise;

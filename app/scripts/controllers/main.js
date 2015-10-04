@@ -13,14 +13,20 @@ angular.module('visualHackerNewsApp')
 	var size    = null;
 	$scope.news = [];
 	$scope.busy    = false;
-
     latest.$loaded().then(function(latestList){
 		$scope.latestList = latestList;
 		size              = latestList.length;
 		$scope.nextPage();
+		// console.log(latestList);
+		latest.$watch(function(e) {
+			if (e.event === "child_added") {
+			  console.log("child_added",e);
+			}
+		});
     });
+
     $scope.nextPage = function nextPage() {
-    	var pageSize = 12;
+    	var pageSize = 28;
     	var pageList = $scope.latestList && $scope.latestList.slice(index,pageSize+index);
     	var qPagelist = [];
     	// console.log(size , index ,$scope.news.length, $scope.busy );
@@ -38,7 +44,7 @@ angular.module('visualHackerNewsApp')
     		$timeout(function(){
 	    		$scope.busy=false;
 	    		index = index + pageSize;
-    		},100);
+    		},250);
     	});
 
     }
