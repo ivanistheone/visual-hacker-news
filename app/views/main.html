@@ -1,5 +1,15 @@
 <h2>Visual Hacker News</h2>
 <p>Quick way to visualize the top 500 news items on <a href="https://news.ycombinator.com/" target="_blank">Hacker news</a> using <a href="https://angularjs.org/" target="_blank">Angularjs</a> and <a href="https://github.com/HackerNews/API">HackerNews Firebase API</a>. Thumbnails generated using <a href="http://webthumbnail.org" target="_blank">webthumbnail.org</a></p>
+
+<p class="status good" ng-if="loggedIn">
+	<img ng-src="{{user.twitter.profileImageURL}}" alt=""/>
+	{{user.twitter.displayName}}. <a ng-click="logout()" class="btn-btn-default">Logout</a>
+</p>
+
+<p class="status" ng-hide="loggedIn">Welcome. You are not <a ng-click="login()" class="btn-btn-default">Login</a>
+</p>
+
+
 <div infinite-scroll="nextPage()" infinite-scroll-disabled='busy' infinite-scroll-distance="1">
 	<div class="row marketing" data-ng-show="news">
 		<div 
@@ -15,6 +25,7 @@
 			  		alt="{{::newsItem.title}}" />
 			  </a>
 			</div>
+			<a ng-if="loggedIn && !newsItem.isBookmarked" class="save label label-warning" ng-click="save(newsItem)">save</a>
 		</div>
 	</div>
 </div>

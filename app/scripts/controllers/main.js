@@ -8,23 +8,12 @@
  * Controller of the visualHackerNewsApp
  */
 angular.module('visualHackerNewsApp')
-  .controller('MainCtrl', function ($q,$timeout, $scope,latest,newsitem) {
-	var index   = 0;
-	var size    = null;
-	$scope.news = [];
-	$scope.busy    = false;
-    latest.$loaded().then(function(latestList){
-		$scope.latestList = latestList;
-		size              = latestList.length;
-		$scope.nextPage();
-		// console.log(latestList);
-		latest.$watch(function(e) {
-			if (e.event === "child_added") {
-			  console.log("child_added",e);
-			}
-		});
-    });
-
+  .controller('MainCtrl', function ($q,$timeout, $scope,latest,newsitem,Auth,bookmark,resolve_latest) {
+    var index   = 0;
+    var size    = null;
+    $scope.news = [];
+    $scope.busy = false;
+    
     $scope.nextPage = function nextPage() {
     	var pageSize = 28;
     	var pageList = $scope.latestList && $scope.latestList.slice(index,pageSize+index);
@@ -48,4 +37,33 @@ angular.module('visualHackerNewsApp')
     	});
 
     }
+    // latest.$loaded().then(function(latestList){
+        $scope.latestList = resolve_latest;
+        size              = resolve_latest.length;
+        $scope.nextPage();
+        // console.log(resolve_latest);
+        latest.$watch(function(e) {
+            if (e.event === "child_added") {
+              console.log("child_added",e);
+            }
+        });
+    // });
+
+
+    $scope.login = function() {
+      $scope.err = null;
+      Auth.login()
+        .then(function(authData) {
+          $scope.user = authData;
+          console.log("Logged in as:", authData.uid);
+        }).catch(function(error) {
+          console.error("Authentication failed:", error);
+          $scope.err = error;
+        });
+    };
+    $scope.logout = Auth.logout;
+    $scope.save = function(item) {
+        item.isBookmarked = true;
+        bookmark.add(item,$scope.user.uid);
+    };
   });
