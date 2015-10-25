@@ -8,12 +8,12 @@
  * Controller of the visualHackerNewsApp
  */
 angular.module('visualHackerNewsApp')
-  .controller('MainCtrl', function ($q,$timeout, $scope,latest,newsitem,Auth,bookmark,resolve_latest) {
+  .controller('MainCtrl', function ($q,$timeout, $scope,latest,newsitem,bookmark,resolve_latest) {
     var index   = 0;
     var size    = null;
     $scope.news = [];
     $scope.busy = false;
-    
+
     $scope.nextPage = function nextPage() {
     	var pageSize = 28;
     	var pageList = $scope.latestList && $scope.latestList.slice(index,pageSize+index);
@@ -49,19 +49,6 @@ angular.module('visualHackerNewsApp')
         });
     // });
 
-
-    $scope.login = function() {
-      $scope.err = null;
-      Auth.login()
-        .then(function(authData) {
-          $scope.user = authData;
-          console.log("Logged in as:", authData.uid);
-        }).catch(function(error) {
-          console.error("Authentication failed:", error);
-          $scope.err = error;
-        });
-    };
-    $scope.logout = Auth.logout;
     $scope.save = function(item) {
         item.isBookmarked = true;
         bookmark.add(item,$scope.user.uid);

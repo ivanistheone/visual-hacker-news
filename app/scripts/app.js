@@ -49,8 +49,13 @@ angular
   .run(function($rootScope, Auth, $location) {
     // track status of authentication
     Auth.check(function(user) {
+
       $rootScope.loggedIn = !!user;
       $rootScope.user = user;
+
+      if (!user) {
+        $location.path("/")
+      };
     });
     $rootScope.$on("$routeChangeError", function(event, current, previous, eventObj) {
       if (eventObj==="AUTH_REQUIRED") {
