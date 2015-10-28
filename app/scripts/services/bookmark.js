@@ -8,7 +8,7 @@
  * Factory in the visualHackerNewsApp.
  */
 angular.module('visualHackerNewsApp')
-  .factory('bookmark', function (FBURL,$firebaseObject,$firebaseArray) {
+  .factory('bookmark', function (FBURL,$firebaseObject,$firebaseArray,$firebaseUtils) {
     var users = new Firebase(FBURL+"/users");
     
 
@@ -18,11 +18,20 @@ angular.module('visualHackerNewsApp')
     return {
       add: function (item, uuid) {
         
-        var $bookmarks = $firebaseObject(users.child(uuid).child("bookmarks"));
-        $bookmarks.$loaded(function(result){
-          // console.log(result)
-          $bookmarks[item.id]=item;
-          $bookmarks.$save();
+        // var $bookmarks = $firebaseObject(users.child(uuid).child("bookmarks").child(item.id));
+        // $bookmarks.$loaded(function(result){
+        //   console.log(result)
+        //   $bookmarks=item;
+        //   $bookmarks.$save();
+        // });
+        var bookmarkRef = users.child(uuid).child("bookmarks").child(item.id);
+        bookmarkRef.transaction(function(currentData) {
+          var data = angular.fromJson(angular.toJson(item));
+          if (currentData === null) {
+
+            console.log(data);
+            return data;
+          }
         });
       },
       read: function(uuid){
