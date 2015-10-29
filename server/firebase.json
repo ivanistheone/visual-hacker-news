@@ -1,0 +1,10 @@
+{
+  "firebase": "visual-hacker-news",
+  "public": "public",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ],
+  "rules":"security-rules.json"
+}
