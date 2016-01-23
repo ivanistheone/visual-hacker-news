@@ -10,7 +10,7 @@ var queue  = kue.createQueue({
 });
 
 function headReaquest(thumbUrl){
-	var imageUrl = `http://api.webthumbnail.org?width=500&height=500&screen=1024&format=jpg&url=${thumbUrl}`;
+	var imageUrl = `https://hnews.xyz/thumbnail/?width=500&height=500&screen=1024&format=jpg&url=${thumbUrl}`;
 	var srvUrl = url.parse(imageUrl);
 	var options = {
 		hostname:srvUrl.hostname,
@@ -20,7 +20,7 @@ function headReaquest(thumbUrl){
 	};
 	var req = http.request(options, function(res) {
 		// console.log(JSON.stringify(res.headers));
-	  console.log('IMG=%s STATUS=%d UPTIME=%s',imageUrl,res.statusCode,process.uptime());
+	  console.log('IMG=%s STATUS=%d',imageUrl,res.statusCode);
 	});
 	req.on('error', function(e) {
 		console.error('Fail for :'+url+'\n',e.message);
@@ -38,9 +38,9 @@ function getNewsUrl(newsItem) {
   return new Promise(function(resolve, reject) {
   	queryRef.on("value", function(snapshot) {
   		var result = snapshot.val();
+  	  // console.log(result);
   		if (result.url) {
 	  		resolve(result.url);
-  	 //  console.log(result);
   		} else {
   			reject(new Error('No url detected'));
   		}
@@ -51,17 +51,13 @@ function getNewsUrl(newsItem) {
   });
 }
 
-function run(app){
-	var firstLoad = false;
-	latest.once("value",function(snapshot){
-		firstLoad = true;
-	});
-	latest.on("child_added", function(snapshot) {
-		if (!firstLoad) return;
-
+function run(){
+	latest.on("child_changed", function(snapshot) {
 		var inewsId = snapshot.val();
 		// console.log(inewsId);
 		getNewsUrl(inewsId).then(function(url){
+			if (url.includes('[pdf]')) {return;}
+
 			var job = queue.create('cacheImage', {url: url});
 
 			job.removeOnComplete( true )
