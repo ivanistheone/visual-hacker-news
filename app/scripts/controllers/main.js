@@ -42,11 +42,11 @@ angular.module('visualHackerNewsApp')
         size              = resolve_latest.length;
         $scope.nextPage();
         // console.log(resolve_latest);
-        latest.$watch(function(e) {
-            if (e.event === "child_added") {
-              console.log("child_added",e);
-            }
-        });
+        // latest.$watch(function(e) {
+        //     if (e.event === "child_changed") {
+        //       console.log("child_changed",e);
+        //     }
+        // });
     // });
 
     $scope.save = function(item) {
