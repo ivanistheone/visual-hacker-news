@@ -1,10 +1,16 @@
 "use strict";
 var Firebase = require('firebase');
-var latest   = new Firebase("https://hacker-news.firebaseio.com/v0/topstories");
-var http     = require('http');
-var url      = require('url');
+var latest = new Firebase("https://hacker-news.firebaseio.com/v0/topstories");
+var http   = require('http');
+var url    = require('url');
+var kue    = require('kue');
+var queue  = kue.createQueue({
+	jobEvents: false,
+	redis: process.env.REDIS_URL
+});
 
-var headReaquest = function(imageUrl){
+function headReaquest(thumbUrl){
+	var imageUrl = `http://api.webthumbnail.org?width=500&height=500&screen=1024&format=jpg&url=${thumbUrl}`;
 	var srvUrl = url.parse(imageUrl);
 	var options = {
 		hostname:srvUrl.hostname,
@@ -21,9 +27,10 @@ var headReaquest = function(imageUrl){
 	});
 
 	req.end();
-};
+}
 
-var getNewsUrl = function(newsItem) {
+
+function getNewsUrl(newsItem) {
 	// var deffer = new Deferred();
   var queryRef = new Firebase("https://hacker-news.firebaseio.com/v0/item/").child(newsItem);
   // return it as a synchronized object
@@ -32,9 +39,7 @@ var getNewsUrl = function(newsItem) {
   	queryRef.on("value", function(snapshot) {
   		var result = snapshot.val();
   		if (result.url) {
-	  		var imgUrl = `http://api.webthumbnail.org?width=500&height=500&screen=1024&format=jpg&url=${result.url}`;
-	  		// console.log(imgUrl);
-	  		resolve(imgUrl);
+	  		resolve(result.url);
   	 //  console.log(result);
   		} else {
   			reject(new Error('No url detected'));
@@ -44,16 +49,40 @@ var getNewsUrl = function(newsItem) {
   	  reject(new Error(result));
   	});
   });
-};
-var run = function(){
+}
+
+function run(app){
+	var firstLoad = false;
+	latest.once("value",function(snapshot){
+		firstLoad = true;
+	});
 	latest.on("child_added", function(snapshot) {
+		if (!firstLoad) return;
+
 		var inewsId = snapshot.val();
-		getNewsUrl(inewsId).then(function(imgUrl){
-			headReaquest(imgUrl);
+		// console.log(inewsId);
+		getNewsUrl(inewsId).then(function(url){
+			var job = queue.create('cacheImage', {url: url});
+
+			job.removeOnComplete( true )
+			.ttl(60*1000)
+			.delay(1000)
+			.save( function(err){
+			   	if( !err ) console.log( `Job Qued ${job.id}` );
+			});
 		})
 	   ;
 	}, function (errorObject) {
 	  console.log("The read failed: " + errorObject.code);
+	});
+
+	queue.process('cacheImage',function(job, done){
+	  console.log(`Caching : ${job.data.url}`);
+	  headReaquest(job.data.url);
+	  setTimeout(function(){
+		  done();
+	  },1500);
+
 	});
 }
 module.exports = {

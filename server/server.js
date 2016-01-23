@@ -17,6 +17,9 @@ if ( cluster.isMaster ) {
     var numCPUs  = os.cpus().length;
     var timeouts = [];
 
+    // We make sure that thumbnails are cached
+    require('./fetchImages').run(app);
+
     for (var i = 0; i < numCPUs; i++) {
         cluster.fork();
     }
@@ -41,7 +44,9 @@ app.use(compress());
 app.use(serveStatic('./'+publicFolder,options));
 
 
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 9000);
  
-console.log('listening on port',process.env.PORT || 3000);
+console.log('listening on port',process.env.PORT || 9000);
 }
+
+

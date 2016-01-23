@@ -5,7 +5,8 @@
     "firebase": "^2.3.1",
     "koa": "^1.0.0",
     "koa-compress": "^1.0.8",
-    "koa-static": "^1.4.9"
+    "koa-static": "^1.4.9",
+    "kue": "^0.10.5"
   },
   "engines": {
     "node": "4.1.1"
