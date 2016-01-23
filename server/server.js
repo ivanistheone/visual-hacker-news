@@ -1,15 +1,5 @@
 'use strict';
 
-var serveStatic = require('koa-static');
-var options     = {
-    maxage : 7 * 24 * 60 * 60,
-    };
-var compress     = require('koa-compress');
-var koa          = require('koa');
-var app          = koa();
-var publicFolder = "./public";
-
-
 var cluster = require('cluster');
 var os      = require('os');
 
@@ -18,7 +8,7 @@ if ( cluster.isMaster ) {
     var timeouts = [];
 
     // We make sure that thumbnails are cached
-    require('./fetchImages').run(app);
+    require('./fetchImages').run();
 
     for (var i = 0; i < numCPUs; i++) {
         cluster.fork();
@@ -38,10 +28,27 @@ if ( cluster.isMaster ) {
     });
 }
 else {
-
+let serveStatic = require('koa-static');
+let options     = {
+    maxage : 7 * 24 * 60 * 60,
+    };
+let compress     = require('koa-compress');
+let koa          = require('koa');
+let app          = koa();
+let publicFolder = "./public";
 
 app.use(compress()); 
 app.use(serveStatic('./'+publicFolder,options));
+app.use(function *(next){
+    var ctx = this;
+    if (this.url.includes('/thumbnail/')) {
+    
+      let request   = require('request');
+      let imageUrl='http://api.webthumbnail.org'+this.url.split('/thumbnail/')[1];
+      this.response.body = request(imageUrl);
+        
+    };
+});
 
 
 app.listen(process.env.PORT || 9000);
