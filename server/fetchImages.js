@@ -1,7 +1,7 @@
 "use strict";
 var Firebase = require('firebase');
 var latest = new Firebase("https://hacker-news.firebaseio.com/v0/topstories");
-var http   = require('http');
+var request   = require('request');
 var url    = require('url');
 var kue    = require('kue');
 var queue  = kue.createQueue({
@@ -11,22 +11,14 @@ var queue  = kue.createQueue({
 
 function headReaquest(thumbUrl){
 	var imageUrl = `https://hnews.xyz/thumbnail/?width=500&height=500&screen=1024&format=jpg&url=${thumbUrl}`;
-	var srvUrl = url.parse(imageUrl);
 	var options = {
-		hostname:srvUrl.hostname,
-		port:srvUrl.port,
-		path:srvUrl.path,
+		url:imageUrl,
 		method:'HEAD'
 	};
-	var req = http.request(options, function(res) {
-		// console.log(JSON.stringify(res.headers));
-	  console.log('IMG=%s STATUS=%d',imageUrl,res.statusCode);
+	request(options, function(error, response, body) {
+		// console.log(JSON.stringify(response.headers));
+	  console.log('IMG=%s STATUS=%d',imageUrl,response.statusCode);
 	});
-	req.on('error', function(e) {
-		console.error('Fail for :'+url+'\n',e.message);
-	});
-
-	req.end();
 }
 
 
