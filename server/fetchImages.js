@@ -17,7 +17,7 @@ function headReaquest(thumbUrl){
 	};
 	request(options, function(error, response, body) {
 		// console.log(JSON.stringify(response.headers));
-	  console.log('IMG=%s STATUS=%d',imageUrl,response.statusCode);
+	  console.log('IMG=%s STATUS=%d CACHE=%s',imageUrl,response.statusCode, response.headers['cf-cache-status']);
 	});
 }
 
@@ -54,7 +54,7 @@ function run(){
 
 			job.removeOnComplete( true )
 			.ttl(60*1000)
-			.delay(1000)
+			.delay(200)
 			.save( function(err){
 			   	if( !err ) console.log( `Job Qued ${job.id}` );
 			});
@@ -69,7 +69,7 @@ function run(){
 	  headReaquest(job.data.url);
 	  setTimeout(function(){
 		  done();
-	  },1500);
+	  },200);
 
 	});
 }
