@@ -5,7 +5,12 @@
 			data-ng-repeat="newsItem in news track by ::newsItem.$id"
 			data-ng-if="::newsItem.url">
 			<div class="news-item">
-			  <h5 class="news-title"><span class="label label-default">{{::newsItem.score}}</span> {{::newsItem.title}}</h5>
+			  <h5 class="news-title">
+			  <a target="_blank"  href="http://news.ycombinator.com/item?id={{::newsItem.id}}">
+			  <span class="label label-default" >{{::newsItem.score}}</span>
+				{{::newsItem.title}}
+			  </a>
+			  </h5>
 			  <a href="{{::newsItem.url}}" target="_blank">
 			  	<img 
 			  		class="img-responsive" 

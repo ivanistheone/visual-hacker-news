@@ -1,7 +1,7 @@
 /* Space out content a bit */
 @import "_bootstrap.less";
 body {
-  padding-top: 20px;
+  padding-top: 0px;
   padding-bottom: 20px;
 }
 a {
@@ -17,23 +17,27 @@ a {
   overflow: hidden;
 }
 
-.news-item a {
+.news-item .thumb {
   display: block;
   background-color: #000;
   width: 100%;
   padding-bottom: 100%;
 
-}
-.news-item a img {
-  position: absolute;
-  opacity: 0.7;
-  transition: opacity .15s ease-in-out;
-  transform:translateZ(0);
+  img {
+    position: absolute;
+    opacity: 0.7;
+    transition: opacity .15s ease-in-out;
+    transform:translateZ(0);
 
+  }
+  &:hover img {
+    opacity: 1;
+  }
+  &:visited {
+    background-color: #00E5FF;
+  }
 }
-.news-item a:hover img {
-  opacity: 1;
-}
+
 .save{
   position: absolute;
   top: 10px;
@@ -52,6 +56,10 @@ a {
     top: -4px;
     position: relative;
     display: inline-block;
+
+  }
+  a {
+    color: #FFF;
   }
 }
 .profile-img {
