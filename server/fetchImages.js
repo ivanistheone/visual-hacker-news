@@ -43,7 +43,17 @@ function getNewsUrl(newsItem) {
   });
 }
 
+function flushDB(){
+	var redis = require("redis"),
+	    client = redis.createClient(process.env.REDIS_URL);
+	client.flushall(function(err, replies){
+		console.log("Flushing Redis:",err, replies);
+		client.quit();
+	});
+}
 function run(){
+	flushDB();
+
 	latest.on("child_changed", function(snapshot) {
 		var inewsId = snapshot.val();
 		// console.log(inewsId);
