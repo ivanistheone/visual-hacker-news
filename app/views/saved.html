@@ -1,24 +1,14 @@
 <div>
 	<div class="row marketing" data-ng-show="news">
 		<div 
-			class="col-sm-6 col-lg-3" 
-			data-ng-repeat="newsItem in news track by ::newsItem.$id"
-			data-ng-if="::newsItem.url">
-			<div class="news-item">
-			  <h5 class="news-title">
-			  <a target="_blank"  href="http://news.ycombinator.com/item?id={{::newsItem.id}}">
-			  <span class="label label-default" >{{::newsItem.score}}</span>
-				{{::newsItem.title}}
-			  </a>
-			  </h5>
-			  <a href="{{::newsItem.url}}" target="_blank">
-			  	<img 
-			  		class="img-responsive" 
-			  		data-ng-src='https://hnews.xyz/thumbnail/?width=500&height=500&screen=1024&format=jpg&url={{::newsItem.url}}' 
-			  		alt="{{::newsItem.title}}" />
-			  </a>
-			</div>
-			<a ng-if="loggedIn" class="save label label-danger" ng-click="news.$remove(newsItem)">remove</a>
+			class          ="col-sm-6 col-lg-3" 
+			data-ng-repeat ="newsItem in news track by ::newsItem.$id"
+			data-ng-if     ="::newsItem.url"
+			>
+			<card 
+				data-item          ="newsItem"
+				data-remove-action =loggedIn
+				></card>
 		</div>
 	</div>
 </div>

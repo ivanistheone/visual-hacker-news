@@ -1,0 +1,24 @@
+<div class="card">
+  <h5 class="news-title">
+  <a target="_blank"  href="http://news.ycombinator.com/item?id={{$ctrl.id}}">
+  <span class="label label-default" >{{$ctrl.item.score}}</span>
+	{{$ctrl.item.title}}
+  </a>
+  </h5>
+  <a href="{{$ctrl.item.url}}" target="_blank" class="thumb">
+  	<img 
+  		class="img-responsive" 
+  		data-ng-src='https://hnews.xyz/thumbnail/?width=500&height=500&screen=1024&format=jpg&url={{$ctrl.item.url}}' 
+  		alt="{{$ctrl.item.title}}" />
+  </a>
+  <a 
+    class="save label label-warning" 
+    ng-if="$ctrl.saveAction && !$ctrl.item.isBookmarked" 
+    ng-click="$ctrl.save($ctrl.item)"
+    >save</a>
+  <a 
+    class="save label label-danger" 
+    ng-if="$ctrl.removeAction" 
+    ng-click="$ctrl.remove($ctrl.item)"
+    >remove</a>
+</div>

@@ -1,5 +1,6 @@
 /* Space out content a bit */
 @import "_bootstrap.less";
+
 body {
   padding-top: 0px;
   padding-bottom: 20px;
@@ -10,60 +11,11 @@ a {
 .img-responsive {
   width: 100%;
 }
-.news-item {
-  position: relative;
-  margin-bottom: 20px;
-  // transform:translateZ(0);
-  overflow: hidden;
-}
 
-.news-item .thumb {
-  display: block;
-  background-color: #000;
-  width: 100%;
-  padding-bottom: 100%;
-
-  img {
-    position: absolute;
-    opacity: 0.7;
-    transition: opacity .15s ease-in-out;
-    transform:translateZ(0);
-
-  }
-  &:hover img {
-    opacity: 1;
-  }
-  &:visited {
-    background-color: #00E5FF;
-  }
-}
-
-.save{
-  position: absolute;
-  top: 10px;
-  right: 20px;
-}
-.news-title {
-  position: absolute;
-  transform:translateZ(0);
-  bottom: 0;
-  color: #FFF;
-  background-color: #000;
-  padding: 10px 20px;
-  z-index: 2;
-  .label {
-    margin-right: 10px;
-    top: -4px;
-    position: relative;
-    display: inline-block;
-
-  }
-  a {
-    color: #FFF;
-  }
-}
 .profile-img {
   margin-top: -10px;
   margin-bottom: -10px;
   margin-right: 10px;
 }
+
+@import "card/card.less";

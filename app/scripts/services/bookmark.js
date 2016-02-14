@@ -8,24 +8,24 @@
  * Factory in the visualHackerNewsApp.
  */
 angular.module('visualHackerNewsApp')
-  .factory('bookmark', function (FBURL,$firebaseObject,$firebaseArray,$firebaseUtils) {
+  .factory('bookmark', function ($rootScope,FBURL,$firebaseObject,$firebaseArray,$firebaseUtils) {
     var users = new Firebase(FBURL+"/users");
-    
-
-    var meaningOfLife = 42;
 
     // Public API here
     return {
-      add: function (item, uuid) {
+      add: function (item) {
         
-        // var $bookmarks = $firebaseObject(users.child(uuid).child("bookmarks").child(item.id));
+        // var $bookmarks = $firebaseObject(users.child(currentUserId).child("bookmarks").child(item.id));
         // $bookmarks.$loaded(function(result){
         //   console.log(result)
         //   $bookmarks=item;
         //   $bookmarks.$save();
         // });
-        var bookmarkRef = users.child(uuid).child("bookmarks").child(item.id);
+        var currentUserId = $rootScope.user.uid;
+        var bookmarkRef = users.child(currentUserId).child("bookmarks").child(item.id);
         bookmarkRef.transaction(function(currentData) {
+          delete(item.$id);
+          delete(item.$priority);
           var data = angular.fromJson(angular.toJson(item));
           if (currentData === null) {
 
@@ -34,8 +34,17 @@ angular.module('visualHackerNewsApp')
           }
         });
       },
-      read: function(uuid){
-        var $bookmarks = $firebaseArray(users.child(uuid).child("bookmarks"));
+      remove: function (item) {
+        var currentUserId = $rootScope.user.uid;
+        var bookmarkRef = users.child(currentUserId).child("bookmarks").child(item.id);
+        var obj = $firebaseObject(bookmarkRef);
+        obj.$remove().then(function(ref) {
+          console.log(ref);
+        });
+      },
+      read: function(currentUserId){
+
+        var $bookmarks = $firebaseArray(users.child(currentUserId).child("bookmarks"));
         return $bookmarks.$loaded();
       }
     };

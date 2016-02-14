@@ -8,7 +8,7 @@
  * Controller of the visualHackerNewsApp
  */
 angular.module('visualHackerNewsApp')
-  .controller('MainCtrl', function ($q,$timeout, $scope,latest,newsitem,bookmark,resolve_latest) {
+  .controller('MainCtrl', function ($q,$timeout, $scope,newsitem,resolve_latest) {
     var index   = 0;
     var size    = null;
     $scope.news = [];
@@ -37,20 +37,8 @@ angular.module('visualHackerNewsApp')
     	});
 
     }
-    // latest.$loaded().then(function(latestList){
-        $scope.latestList = resolve_latest;
-        size              = resolve_latest.length;
-        $scope.nextPage();
-        // console.log(resolve_latest);
-        // latest.$watch(function(e) {
-        //     if (e.event === "child_changed") {
-        //       console.log("child_changed",e);
-        //     }
-        // });
-    // });
+    $scope.latestList = resolve_latest;
+    size              = resolve_latest.length;
+    $scope.nextPage();
 
-    $scope.save = function(item) {
-        item.isBookmarked = true;
-        bookmark.add(item,$scope.user.uid);
-    };
   });

@@ -34,7 +34,7 @@ module.exports = function (grunt) {
         tasks: ['wiredep']
       },
       js: {
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
+        files: ['<%= yeoman.app %>/scripts/**/*.js'],
         tasks: [],
         options: {
           livereload: '<%= connect.options.livereload %>'
@@ -61,7 +61,7 @@ module.exports = function (grunt) {
           livereload: '<%= connect.options.livereload %>'
         },
         files: [
-          '<%= yeoman.app %>/{,*/}*.html',
+          '<%= yeoman.app %>/**/*.html',
           '.tmp/styles/{,*/}*.css',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
@@ -201,7 +201,8 @@ module.exports = function (grunt) {
     less: {
         options: {
             paths: [
-                './bower_components'
+                './bower_components',
+                './app/scripts/components',
             ]
         },
         dist: {
@@ -324,7 +325,7 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           cwd: '<%= yeoman.dist %>',
-          src: ['*.html', 'views/{,*/}*.html'],
+          src: ['*.html', 'views/{,*/}*.html','scripts/components/**/*.html'],
           dest: '<%= yeoman.dist %>'
         }]
       }
@@ -364,6 +365,7 @@ module.exports = function (grunt) {
             'CNAME',
             '*.html',
             'views/{,*/}*.html',
+            'scripts/components/**/*.html',
             'images/{,*/}*.{webp}',
             'fonts/*'
           ]
