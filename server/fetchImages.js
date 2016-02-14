@@ -1,6 +1,5 @@
 "use strict";
 var Firebase = require('firebase');
-var latest = new Firebase("https://hacker-news.firebaseio.com/v0/topstories");
 var request   = require('request');
 var url    = require('url');
 var kue    = require('kue');
@@ -31,7 +30,7 @@ function getNewsUrl(newsItem) {
   	queryRef.on("value", function(snapshot) {
   		var result = snapshot.val();
   	  // console.log(result);
-  		if (result.url) {
+  		if (result && result.url) {
 	  		resolve(result.url);
   		} else {
   			reject(new Error('No url detected'));
@@ -43,6 +42,23 @@ function getNewsUrl(newsItem) {
   });
 }
 
+function queScreenshot(snapshot) {
+	var inewsId = snapshot.val();
+	// console.log(inewsId);
+	// console.log(arguments);
+	getNewsUrl(inewsId).then(function(url){
+		if (!url || url.includes('[pdf]')) {return;}
+
+		var job = queue.create('cacheImage', {url: url});
+
+		job.removeOnComplete( true )
+		.ttl(60*1000)
+		// .delay(100)
+		.save( function(err){
+		   	if( !err ) console.log( `Job Qued ${job.id}` );
+		});
+	});
+}
 function flushDB(){
 	var redis = require("redis"),
 	    client = redis.createClient(process.env.REDIS_URL);
@@ -51,35 +67,28 @@ function flushDB(){
 		client.quit();
 	});
 }
+
 function run(){
+	var topstories  = new Firebase("https://hacker-news.firebaseio.com/v0/topstories");
+	var newstories  = new Firebase("https://hacker-news.firebaseio.com/v0/newstories");
+	var showstories = new Firebase("https://hacker-news.firebaseio.com/v0/showstories");
+
 	flushDB();
 
-	latest.on("child_changed", function(snapshot) {
-		var inewsId = snapshot.val();
-		// console.log(inewsId);
-		getNewsUrl(inewsId).then(function(url){
-			if (url.includes('[pdf]')) {return;}
-
-			var job = queue.create('cacheImage', {url: url});
-
-			job.removeOnComplete( true )
-			.ttl(60*1000)
-			.delay(200)
-			.save( function(err){
-			   	if( !err ) console.log( `Job Qued ${job.id}` );
-			});
-		})
-	   ;
-	}, function (errorObject) {
+	topstories.on("child_changed", queScreenshot, function (errorObject) {
+	  console.log("The read failed: " + errorObject.code);
+	});
+	newstories.on("child_changed", queScreenshot, function (errorObject) {
+	  console.log("The read failed: " + errorObject.code);
+	});
+	showstories.on("child_changed", queScreenshot, function (errorObject) {
 	  console.log("The read failed: " + errorObject.code);
 	});
 
 	queue.process('cacheImage',function(job, done){
 	  console.log(`Caching : ${job.data.url}`);
 	  headReaquest(job.data.url);
-	  setTimeout(function(){
-		  done();
-	  },200);
+		done();
 
 	});
 }

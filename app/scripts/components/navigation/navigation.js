@@ -15,7 +15,7 @@ angular.module('visualHackerNewsApp')
       user     : '<'
     },
     transclusion:false,
-    controller : function ($rootScope,Auth) {
+    controller : function ($rootScope,Auth,$location) {
       this.login = function() {
         $rootScope.err = null;
         Auth.login()
@@ -28,6 +28,9 @@ angular.module('visualHackerNewsApp')
           });
       };
       this.logout = Auth.logout;
+      this.isActive = function (viewLocation) { 
+          return viewLocation === $location.path();
+      };
     },
     templateUrl:"scripts/components/navigation/navigation.html"
   });

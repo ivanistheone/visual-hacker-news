@@ -21,16 +21,34 @@ angular
   ])
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/', {
+      .when('/topstories', {
         templateUrl: 'views/main.html',
         controller: 'MainCtrl',
         resolve : {
           "resolve_latest" : function(latest) {
-            return latest.$loaded();
+            return latest.topstories().$loaded();
           }
         }
       })
-      .when('/saved', {
+      .when('/newstories', {
+        templateUrl: 'views/main.html',
+        controller: 'MainCtrl',
+        resolve : {
+          "resolve_latest" : function(latest) {
+            return latest.newstories().$loaded();
+          }
+        }
+      })
+      .when('/showstories', {
+        templateUrl: 'views/main.html',
+        controller: 'MainCtrl',
+        resolve : {
+          "resolve_latest" : function(latest) {
+            return latest.showstories().$loaded();
+          }
+        }
+      })
+      .when('/bokmarks', {
         templateUrl: 'views/saved.html',
         controller: 'SavedCtrl',
         resolve : {
@@ -43,7 +61,7 @@ angular
         }
       })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/topstories'
       });
   })
   .run(function($rootScope, Auth, $location) {
