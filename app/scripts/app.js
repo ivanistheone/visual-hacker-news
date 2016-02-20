@@ -21,7 +21,7 @@ angular
   ])
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/topstories', {
+      .when('/', {
         templateUrl: 'views/main.html',
         controller: 'MainCtrl',
         resolve : {
@@ -51,34 +51,32 @@ angular
       .when('/bokmarks', {
         templateUrl: 'views/saved.html',
         controller: 'SavedCtrl',
+        requiresLogin: true,
         resolve : {
           "resolve_currentAuth" : function(Auth) {
           // $requireAuth returns a promise so the resolve waits for it to complete
-          // If the promise is rejected, it will throw a $stateChangeError (see above)
+          // If the promise is rejected, it will throw a $routeChangeError
           return Auth.ref.$requireAuth();
         }
 
         }
       })
       .otherwise({
-        redirectTo: '/topstories'
+        redirectTo: '/'
       });
   })
-  .run(function($rootScope, Auth, $location) {
-    // track status of authentication
-    Auth.check(function(user) {
-
+  .run(function($rootScope, Auth, $location,$route) {
+    // // track status of authentication
+    Auth.ref.$onAuth(function(user) {
       $rootScope.loggedIn = !!user;
       $rootScope.user = user;
-
-      if (!user) {
-        $location.path("/")
-      };
+      if ($route.current.requiresLogin && !$rootScope.loggedIn) {
+        $location.path("/");
+      }
     });
     $rootScope.$on("$routeChangeError", function(event, current, previous, eventObj) {
       if (eventObj==="AUTH_REQUIRED") {
         $location.path("/");
       }
     });
-
   });

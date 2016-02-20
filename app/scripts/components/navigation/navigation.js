@@ -10,7 +10,7 @@
 angular.module('visualHackerNewsApp')
   .component('navigation', {
     bindings: {
-      title    : '@',
+      title    : '=',
       loggedIn : '<',
       user     : '<'
     },

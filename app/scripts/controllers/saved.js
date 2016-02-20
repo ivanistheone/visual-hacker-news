@@ -9,7 +9,7 @@
  */
 angular.module('visualHackerNewsApp')
   .controller('SavedCtrl', function ($scope,bookmark,resolve_currentAuth) {
-  	// console.log(resolve_currentAuth,$scope.user)
+  	// console.log(resolve_currentAuth)
   	bookmark.read(resolve_currentAuth.uid)
   		.then(function(result){
   			$scope.news = result;
