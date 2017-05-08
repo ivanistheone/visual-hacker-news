@@ -48,7 +48,7 @@ angular
           }
         }
       })
-      .when('/bokmarks', {
+      .when('/bookmarks', {
         templateUrl: 'views/saved.html',
         controller: 'SavedCtrl',
         requiresLogin: true,
